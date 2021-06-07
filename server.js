@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 const express = require('express')
-const mysql = require('mysql2')
+const getDb = require('./database/database')
 
 const app = express()
 app.use(express.json())
@@ -15,17 +15,19 @@ app.use(
   })
 )
 
-const db = mysql.createConnection({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE,
-})
+ const connectToDatabase = async () => {
+   const db = await getDb()
+   try {
+     await db.connect()
+     console.log('Connected to db')
+   } catch (error) {
+     console.log(error)
+   }
+ }
+connectToDatabase()
 
-db.connect((err) => {
-  if (err) throw err
-  console.log('Connected to a database!')
-})
+const authRouter = require('./routes/authentication')
+app.use('/', authRouter)
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
