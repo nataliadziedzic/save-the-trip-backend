@@ -1,5 +1,9 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const getDb = require('../config/database')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 exports.registrationController = async (req, res) => {
   const { username, email, password } = req.body
@@ -32,10 +36,35 @@ exports.loginController = async (req, res) => {
     const [rows, fields] = await db.query('SELECT * FROM users WHERE email = ?', [email])
     if (rows.length === 0) return res.status(404).json({ message: "Account doesn't exist" })
     if (rows[0].email === email) {
-      const isPasswordCorrect = await bcrypt.compare(password, rows[0].password)
-      isPasswordCorrect ? res.status(200) : res.status(401).json({ message: 'Invalid password' })
+      const user = rows[0]
+      const isPasswordCorrect = await bcrypt.compare(password, user.password)
+      if (isPasswordCorrect) {
+        const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET)
+        res.status(200).json({
+          accessToken,
+          user: {
+            id: user.id,
+            username: user.username,
+          },
+        })
+      } else res.status(401).json({ message: 'Invalid password' })
     }
   } catch (error) {
     console.log(error)
   }
+}
+
+const trips = [
+  {
+    userId: 16,
+    trip: 'Pierwsza wycieczka',
+  },
+  {
+    userId: 2,
+    trip: 'Druga wycieczka',
+  },
+]
+
+exports.accessTestController = (req, res) => {
+  res.json(trips.filter(trip => trip.userId === req.user.id))
 }
