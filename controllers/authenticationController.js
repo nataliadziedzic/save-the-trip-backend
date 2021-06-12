@@ -39,9 +39,17 @@ exports.loginController = async (req, res) => {
       const user = rows[0]
       const isPasswordCorrect = await bcrypt.compare(password, user.password)
       if (isPasswordCorrect) {
-        const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET)
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+        await db.query(
+          `UPDATE users
+           SET refreshToken = ?
+           WHERE id = ?`,
+          [refreshToken, user.id]
+        )
         res.status(200).json({
           accessToken,
+          refreshToken,
           user: {
             id: user.id,
             username: user.username,
@@ -54,17 +62,30 @@ exports.loginController = async (req, res) => {
   }
 }
 
-const trips = [
-  {
-    userId: 16,
-    trip: 'Pierwsza wycieczka',
-  },
-  {
-    userId: 2,
-    trip: 'Druga wycieczka',
-  },
-]
+exports.refreshController = async (req, res) => {
+  const db = await getDb()
+  const { refreshToken } = req.body
+  try {
+    if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
+    if (!(await db.query('SELECT * FROM users WHERE refreshToken = ?', [refreshToken])))
+      return res.status(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
+      if (error) return res.status(403).json({ message: 'Forbidden' })
+      const accessToken = generateAccessToken(user)
+      return res
+        .status(200)
+        .json({ accessToken: accessToken, user: user.id, username: user.username })
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-exports.accessTestController = (req, res) => {
-  res.json(trips.filter(trip => trip.userId === req.user.id))
+const generateAccessToken = user => {
+  return jwt.sign({ id: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '30s',
+  })
+}
+const generateRefreshToken = user => {
+  return jwt.sign({ id: user.id, username: user.username }, process.env.REFRESH_TOKEN_SECRET)
 }
