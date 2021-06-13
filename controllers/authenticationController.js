@@ -22,7 +22,6 @@ exports.registrationController = async (req, res) => {
       res.status(201).json({ message: 'User created.' })
     }
   } catch (error) {
-    console.log(error)
     res.status(500).json({ message: error.message })
     process.exit(1)
   }
@@ -60,7 +59,6 @@ exports.loginController = async (req, res) => {
       } else res.status(401).json({ message: 'Invalid password' })
     }
   } catch (error) {
-    console.log(error)
     res.status(500).json({ message: error.message })
     process.exit(1)
   }
@@ -81,7 +79,6 @@ exports.refreshController = async (req, res) => {
         .json({ accessToken: accessToken, user: user.id, username: user.username })
     })
   } catch (error) {
-    console.log(error)
     res.status(500).json({ message: error.message })
     process.exit(1)
   }

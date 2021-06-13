@@ -36,6 +36,9 @@ app.use('/', authRouter)
 const tripsRouter = require('./routes/trips')
 app.use('/', tripsRouter)
 
+const documentsRouter = require('./routes/documents')
+app.use('/documents', documentsRouter)
+
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
 })
