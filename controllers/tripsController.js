@@ -23,6 +23,7 @@ exports.createTripController = async (req, res) => {
   const { title, description, user_id, start_date, img } = req.body
   try {
     if (!user_id || !title || !description || !start_date) return res.status(400).json({ message: 'Bad request' })
+    // if (img) {send to aws bucket then create trip}
     const newTrip = await db.query('INSERT INTO trips (title, description, user_id, start_date) VALUES (?, ?, ?, ?)', [
       title,
       description,
@@ -42,8 +43,44 @@ exports.createTripController = async (req, res) => {
   }
 }
 
-exports.getTrip = async (req, res, next) => {
-  console.log('get by id')
+exports.updateTripController = async (req, res) => {
+  const db = await getDb()
+  const tripId = res.trip.id
+  const { title, description, img, start_date } = req.body
+  try {
+    if (title) {
+      await db.query('UPDATE trips SET title = ? WHERE id = ?', [title, tripId])
+    }
+    console.log('koniec updatu tytułu')
+    if (description) {
+      await db.query('UPDATE trips SET description = ? WHERE id = ?', [description, tripId])
+    }
+    // delete current ? and send new to aws then =>
+    // if (img) {  await db.query('UPDATE trips SET img = ? WHERE id = ?', [img, tripId])}
+    if (start_date) {
+      await db.query('UPDATE trips SET start_date = ? WHERE id = ?', [start_date, tripId])
+    }
+    res.status(200).json({ message: 'Updated successfully' })
+  } catch (error) {
+        res.status(500).json({ message: error.message })
+        process.exit(1)
+  }
+}
+
+exports.deleteTripController = async (req, res) => {
+  const db = await getDb()
+  const tripId = res.trip.id
+  try {
+    await db.query('DELETE FROM documents_lists WHERE trip_id = ?', [tripId])
+    await db.query('DELETE FROM trips WHERE id = ?', [tripId])
+    res.status(204).json({ message: 'Deleted successfully' })
+  } catch (error) {
+        res.status(500).json({ message: error.message })
+        process.exit(1)
+  }
+}
+
+exports.findTrip = async (req, res, next) => {
   const db = await getDb()
   let trip
   try {
