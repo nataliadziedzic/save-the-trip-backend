@@ -33,6 +33,9 @@ connectToDatabase()
 const authRouter = require('./routes/authentication')
 app.use('/', authRouter)
 
+const tripsRouter = require('./routes/trips')
+app.use('/', tripsRouter)
+
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
 })

@@ -23,6 +23,8 @@ exports.registrationController = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
+    res.status(500).json({ message: error.message })
+    process.exit(1)
   }
 }
 
@@ -59,6 +61,8 @@ exports.loginController = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
+    res.status(500).json({ message: error.message })
+    process.exit(1)
   }
 }
 
@@ -78,12 +82,14 @@ exports.refreshController = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
+    res.status(500).json({ message: error.message })
+    process.exit(1)
   }
 }
 
 const generateAccessToken = user => {
   return jwt.sign({ id: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '30s',
+    expiresIn: '30m',
   })
 }
 const generateRefreshToken = user => {
