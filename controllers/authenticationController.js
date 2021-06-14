@@ -80,13 +80,13 @@ exports.refreshController = async (req, res) => {
   const db = await getDb()
   const { refreshToken } = req.body
   try {
-    if (!refreshToken) return res.status(403).json({ message: 'Forbidden' })
+    if (!refreshToken) return res.status(404).json({ message: 'Bad request' })
     const userWithToken = await db.query('SELECT * FROM users WHERE refreshToken = ?', [refreshToken])
     if (userWithToken[0].length === 0) return res.status(401).json({message: 'Unauthorized'})
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
       if (error) return res.status(403).json({ message: 'Forbidden' })
       const accessToken = generateAccessToken(user)
-      return res.status(200).json({ accessToken: accessToken, user: user.id, username: user.username })
+      return res.status(200).json({ accessToken: accessToken, id: user.id, username: user.username })
     })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -96,7 +96,7 @@ exports.refreshController = async (req, res) => {
 
 const generateAccessToken = user => {
   return jwt.sign({ id: user.id, username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: '10m',
+    expiresIn: '30m',
   })
 }
 const generateRefreshToken = user => {
