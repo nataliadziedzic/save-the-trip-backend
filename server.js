@@ -39,6 +39,9 @@ app.use('/', tripsRouter)
 const documentsRouter = require('./routes/documents')
 app.use('/documents', documentsRouter)
 
+const imagesRouter = require('./routes/images')
+app.use('/images', imagesRouter)
+
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
 })

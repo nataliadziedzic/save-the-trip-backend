@@ -65,7 +65,7 @@ exports.findDocuments = async (req, res, next) => {
   const db = await getDb()
   let documents
   try {
-    const dbDocuments = await db.query('SELECT * FROM documents_lists WHERE id = ?', [req.params.id])
+    const dbDocuments = await db.query('SELECT * FROM documents_lists WHERE trip_id = ?', [req.params.id])
     if (dbDocuments[0].length === 0) {
       return res.status(404).json({ message: 'Cannot find documents' })
     }

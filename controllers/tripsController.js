@@ -51,12 +51,11 @@ exports.updateTripController = async (req, res) => {
     if (title) {
       await db.query('UPDATE trips SET title = ? WHERE id = ?', [title, tripId])
     }
-    console.log('koniec updatu tytułu')
     if (description) {
       await db.query('UPDATE trips SET description = ? WHERE id = ?', [description, tripId])
     }
     // delete current ? and send new to aws then =>
-    // if (img) {  await db.query('UPDATE trips SET img = ? WHERE id = ?', [img, tripId])}
+    if (img) { await db.query('UPDATE trips SET img = ? WHERE id = ?', [img, tripId])}
     if (start_date) {
       await db.query('UPDATE trips SET start_date = ? WHERE id = ?', [start_date, tripId])
     }
