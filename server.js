@@ -12,7 +12,7 @@ app.use(express.json())
 
 initializePassport(passport)
 
-const allowedOrigins = ['http://localhost:3000']
+const allowedOrigins = ['http://localhost:3000', 'https://save-the-trip-frontend.herokuapp.com']
 app.use(
   cors({
     origin: allowedOrigins,
