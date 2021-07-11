@@ -7,11 +7,14 @@ const {
   updateItemController,
   deleteItemController,
   getItemsController,
+  updateItemStatusController,
 } = require('../controllers/shoppingListController')
 
 router.get('/:tripId', passport.authenticate('jwt', { session: false }), (req, res) => getItemsController(req, res))
 
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => createShoppingItemController(req, res))
+
+router.patch('/:id', passport.authenticate('jwt', { session: false }), findItem, (req, res) => updateItemStatusController(req, res))
 
 router.put('/', passport.authenticate('jwt', { session: false }), (req, res) =>
   updateItemController(req, res)
