@@ -55,7 +55,6 @@ exports.updateItemStatusController = async (req, res) => {
   const { status } = req.body
   try {
     if (status) {
-      console.log(status)
       await db.query('UPDATE shopping_lists SET status = ? WHERE id = ?', [status, itemId])
       res.status(200).json({ message: 'Updated successfully' })
     } else res.status(400).json({ message: 'Bad request' })
@@ -64,6 +63,7 @@ exports.updateItemStatusController = async (req, res) => {
     process.exit(1)
   }
 }
+
 exports.deleteItemController = async (req, res) => {
   const db = await getDb()
   const itemId = res.item.id

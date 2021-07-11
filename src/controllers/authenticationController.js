@@ -55,6 +55,7 @@ exports.loginController = async (req, res) => {
             id: user.id,
             username: user.username,
             email: user.email,
+            preferredLanguage: user.preferredLanguage,
           },
         })
       } else res.status(401).json({ message: 'Invalid password' })
@@ -87,9 +88,13 @@ exports.refreshController = async (req, res) => {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
       if (error) return res.status(403).json({ message: 'Forbidden' })
       const accessToken = generateAccessToken(user)
-      return res
-        .status(200)
-        .json({ accessToken: accessToken, id: user.id, username: user.username, email: userWithToken.email })
+      return res.status(200).json({
+        accessToken: accessToken,
+        id: user.id,
+        username: user.username,
+        email: userWithToken[0][0].email,
+        preferredLanguage: userWithToken[0][0].preferredLanguage,
+      })
     })
   } catch (error) {
     res.status(500).json({ message: error.message })

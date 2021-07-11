@@ -45,6 +45,9 @@ app.use('/images', imagesRouter)
 const shoppingRouter = require('./routes/shoppingList')
 app.use('/shopping-item', shoppingRouter)
 
+const userRouter = require('./routes/user')
+app.use('/', userRouter)
+
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
 })
