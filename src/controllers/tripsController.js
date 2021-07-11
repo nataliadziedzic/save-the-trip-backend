@@ -1,4 +1,4 @@
-const getDb = require('../config/database')
+const getDb = require('../../config/database')
 
 exports.getTripsController = async (req, res) => {
   const db = await getDb()
@@ -23,7 +23,6 @@ exports.createTripController = async (req, res) => {
   const { title, description, user_id, start_date, img } = req.body
   try {
     if (!user_id || !title || !description || !start_date) return res.status(400).json({ message: 'Bad request' })
-    // if (img) {send to aws bucket then create trip}
     const newTrip = await db.query('INSERT INTO trips (title, description, user_id, start_date) VALUES (?, ?, ?, ?)', [
       title,
       description,
@@ -54,7 +53,7 @@ exports.updateTripController = async (req, res) => {
     if (description) {
       await db.query('UPDATE trips SET description = ? WHERE id = ?', [description, tripId])
     }
-    // delete current ? and send new to aws then =>
+    // delete current ?
     if (img) { await db.query('UPDATE trips SET img = ? WHERE id = ?', [img, tripId])}
     if (start_date) {
       await db.query('UPDATE trips SET start_date = ? WHERE id = ?', [start_date, tripId])

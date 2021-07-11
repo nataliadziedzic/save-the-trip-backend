@@ -10,6 +10,7 @@ const {
   findTrip,
 } = require('../controllers/tripsController')
 
+
 router.get('/user/:userId/trips', passport.authenticate('jwt', { session: false }), (req, res) =>
   getTripsController(req, res)
 )

@@ -2,7 +2,7 @@ const fs = require('fs')
 const util = require('util')
 const unlinkFile = util.promisify(fs.unlink)
 
-const { uploadFile, getFileStream } = require('../s3')
+const { uploadFile, getFileStream } = require('../../config/s3')
 
 exports.getImageController = async (req, res) => {
   const key = req.params.key

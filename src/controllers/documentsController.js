@@ -1,4 +1,4 @@
-const getDb = require('../config/database')
+const getDb = require('../../config/database')
 
 exports.getDocumentsForTripController = async (req, res) => {
   res.json(res.documents)

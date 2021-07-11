@@ -4,8 +4,8 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express')
 const cors = require('cors')
 const passport = require('passport')
-const initializePassport = require('./config/passport.config')
-const getDb = require('./config/database')
+const initializePassport = require('../config/passport.config')
+const getDb = require('../config/database')
 
 const app = express()
 app.use(express.json())
@@ -41,6 +41,9 @@ app.use('/documents', documentsRouter)
 
 const imagesRouter = require('./routes/images')
 app.use('/images', imagesRouter)
+
+const shoppingRouter = require('./routes/shoppingList')
+app.use('/shopping-item', shoppingRouter)
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Running`)
