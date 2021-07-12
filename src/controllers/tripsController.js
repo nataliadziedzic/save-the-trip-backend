@@ -15,7 +15,10 @@ exports.getTripsController = async (req, res) => {
 }
 
 exports.getSingleTripController = async (req, res) => {
-  res.json(res.trip)
+  const trip = res.trip
+  if(+req.params.userId === trip.user_id){
+    res.status(200).json(res.trip)
+  }
 }
 
 exports.createTripController = async (req, res) => {

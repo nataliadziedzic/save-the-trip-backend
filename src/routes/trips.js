@@ -15,7 +15,7 @@ router.get('/user/:userId/trips', passport.authenticate('jwt', { session: false 
   getTripsController(req, res)
 )
 
-router.get('/trip/:id', passport.authenticate('jwt', { session: false }), findTrip, (req, res) =>
+router.get('/user/:userId/trip/:id', passport.authenticate('jwt', { session: false }), findTrip, (req, res) =>
   getSingleTripController(req, res)
 )
 
