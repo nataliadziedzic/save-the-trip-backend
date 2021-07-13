@@ -1,11 +1,10 @@
-const getDb = require('../../config/database')
+const db = require('../../config/database')
 
 exports.getDocumentsForTripController = async (req, res) => {
   res.json(res.documents)
 }
 
 exports.updateDocumentsController = async (req, res) => {
-  const db = await getDb()
   const documentsId = res.documents.id
   const {
     passport,
@@ -62,7 +61,6 @@ exports.updateDocumentsController = async (req, res) => {
 }
 
 exports.findDocuments = async (req, res, next) => {
-  const db = await getDb()
   let documents
   try {
     const dbDocuments = await db.query('SELECT * FROM documents_lists WHERE trip_id = ?', [req.params.id])

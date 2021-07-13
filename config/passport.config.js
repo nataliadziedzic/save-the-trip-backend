@@ -1,13 +1,12 @@
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
-const getDb = require('./database')
+const db = require('./database')
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.ACCESS_TOKEN_SECRET,
 }
 const initialize = async passport => {
-  const db = await getDb()
   passport.use(
     new JwtStrategy(options, async (jwt_payload, done) => {
       try {

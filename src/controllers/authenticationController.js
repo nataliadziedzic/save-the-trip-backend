@@ -1,14 +1,13 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
-const getDb = require('../../config/database')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const db = require('../../config/database')
 
 exports.registrationController = async (req, res) => {
   const { username, email, password } = req.body
   const hashedPassword = await bcrypt.hash(password, 10)
-  const db = await getDb()
   try {
     const [rows, fields] = await db.query('SELECT email FROM users WHERE email = ?', [email])
     if (rows.length > 0) {
@@ -29,7 +28,6 @@ exports.registrationController = async (req, res) => {
 
 exports.loginController = async (req, res) => {
   const { email, password } = req.body
-  const db = await getDb()
   try {
     if (!email || !password) {
       return res.status(400).json({ message: 'Please provide an email and a password.' })
@@ -68,7 +66,6 @@ exports.loginController = async (req, res) => {
 
 exports.logoutController = async (req, res) => {
   const userId = req.params.id
-  const db = await getDb()
   try {
     await db.query(`UPDATE users SET refreshToken = ? WHERE id = ?`, [null, userId])
     res.sendStatus(204)
@@ -79,8 +76,8 @@ exports.logoutController = async (req, res) => {
 }
 
 exports.refreshController = async (req, res) => {
-  const db = await getDb()
   const { refreshToken } = req.body
+  console.log(db)
   try {
     if (!refreshToken) return res.status(404).json({ message: 'Bad request' })
     const userWithToken = await db.query('SELECT * FROM users WHERE refreshToken = ?', [refreshToken])

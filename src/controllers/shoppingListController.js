@@ -1,7 +1,6 @@
-const getDb = require('../../config/database')
+const db = require('../../config/database')
 
 exports.getItemsController = async (req, res) => {
-  const db = await getDb()
   const tripId = req.params.tripId
   try {
     if (!tripId) return res.status(400).json({ message: 'Bad request' })
@@ -15,7 +14,6 @@ exports.getItemsController = async (req, res) => {
 }
 
 exports.createShoppingItemController = async (req, res) => {
-  const db = await getDb()
   const { title, quantity, unit, user_id, trip_id } = req.body
   try {
     if (!title || !quantity || !unit || !user_id || !trip_id) return res.status(400).json({ message: 'Bad request' })
@@ -33,7 +31,6 @@ exports.createShoppingItemController = async (req, res) => {
 }
 
 exports.updateItemController = async (req, res) => {
-  const db = await getDb()
   const { id, title, quantity, unit, status, trip_id, user_id } = req.body
   try {
     if ((id, title, quantity, unit, status, trip_id, user_id)) {
@@ -50,7 +47,6 @@ exports.updateItemController = async (req, res) => {
 }
 
 exports.updateItemStatusController = async (req, res) => {
-  const db = await getDb()
   const itemId = res.item.id
   const { status } = req.body
   try {
@@ -65,7 +61,6 @@ exports.updateItemStatusController = async (req, res) => {
 }
 
 exports.deleteItemController = async (req, res) => {
-  const db = await getDb()
   const itemId = res.item.id
   try {
     await db.query('DELETE FROM shopping_lists WHERE id = ?', [itemId])
@@ -77,7 +72,6 @@ exports.deleteItemController = async (req, res) => {
 }
 
 exports.findItem = async (req, res, next) => {
-  const db = await getDb()
   let item
   try {
     const dbItem = await db.query('SELECT * FROM shopping_lists WHERE id = ?', [req.params.id])

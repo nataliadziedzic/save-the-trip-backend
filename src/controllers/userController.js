@@ -1,7 +1,6 @@
-const getDb = require('../../config/database')
+const db = require('../../config/database')
 
 exports.updateUserLanguageController = async (req, res) => {
-  const db = await getDb()
   const userId = res.user.id
   const { preferredLanguage } = req.body
   try {
@@ -16,7 +15,6 @@ exports.updateUserLanguageController = async (req, res) => {
 }
 
 exports.findUser = async (req, res, next) => {
-  const db = await getDb()
   let user
   try {
     const dbUser = await db.query('SELECT * FROM users WHERE id = ?', [req.params.id])

@@ -1,7 +1,6 @@
-const getDb = require('../../config/database')
+const db = require('../../config/database')
 
 exports.getTripsController = async (req, res) => {
-  const db = await getDb()
   const userId = req.params.userId
   try {
     if (!userId) return res.status(400).json({ message: 'Bad request' })
@@ -22,7 +21,6 @@ exports.getSingleTripController = async (req, res) => {
 }
 
 exports.createTripController = async (req, res) => {
-  const db = await getDb()
   const { title, description, user_id, start_date, img } = req.body
   try {
     if (!user_id || !title || !description || !start_date) return res.status(400).json({ message: 'Bad request' })
@@ -46,7 +44,6 @@ exports.createTripController = async (req, res) => {
 }
 
 exports.updateTripController = async (req, res) => {
-  const db = await getDb()
   const tripId = res.trip.id
   const { title, description, img, start_date } = req.body
   try {
@@ -69,7 +66,6 @@ exports.updateTripController = async (req, res) => {
 }
 
 exports.deleteTripController = async (req, res) => {
-  const db = await getDb()
   const tripId = res.trip.id
   try {
     await db.query('DELETE FROM documents_lists WHERE trip_id = ?', [tripId])
@@ -82,7 +78,6 @@ exports.deleteTripController = async (req, res) => {
 }
 
 exports.findTrip = async (req, res, next) => {
-  const db = await getDb()
   let trip
   try {
     const dbTrips = await db.query('SELECT * FROM trips WHERE id = ?', [req.params.id])
