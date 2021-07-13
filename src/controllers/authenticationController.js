@@ -77,7 +77,6 @@ exports.logoutController = async (req, res) => {
 
 exports.refreshController = async (req, res) => {
   const { refreshToken } = req.body
-  console.log(db)
   try {
     if (!refreshToken) return res.status(404).json({ message: 'Bad request' })
     const userWithToken = await db.query('SELECT * FROM users WHERE refreshToken = ?', [refreshToken])
